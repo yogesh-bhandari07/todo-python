@@ -5,8 +5,8 @@ from fastapi import FastAPI, Request, Form
 app = FastAPI()
 
 
-@app.get("/")
-async def root():
+@app.post("/register")
+async def register():
     return {"message": "Hello World"}
 
 if __name__ == "__main__":
