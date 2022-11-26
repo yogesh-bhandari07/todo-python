@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import RegisterImg from "../../assets/images/Register.jpg";
-import { useNavigate,Navigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import axios from "axios";
 import Notification, {
   successNotify,
@@ -10,8 +10,6 @@ import Notification, {
 import AuthUser from "../../Services/AuthUser";
 
 function Register() {
-
-
   const { setToken } = AuthUser();
 
   const [registerCredentials, setregisterCredentials] = useState({
@@ -31,20 +29,23 @@ function Register() {
       method: "post",
       url: process.env.REACT_APP_API_BASE_URL + url,
       data: {
-        name: registerCredentials.name,
-        email: registerCredentials.email,
-        password: registerCredentials.password,
+        parameter: {
+          data: {
+            name: registerCredentials.name,
+            email: registerCredentials.email,
+            password: registerCredentials.password,
+          },
+        },
       },
     })
       .then(async (response) => {
         if (response.data.code == 200) {
-          let user = response.data.user;
-          let token = response.data.token;
+          let user = response.data.result.user_data;
+          let token = response.data.result.access_token;
           setToken(user, token);
           successNotify('Register Successfully')
         } else {
           errorNotify(response.data.message);
-          
         }
       })
       .catch((error) => {
@@ -54,11 +55,14 @@ function Register() {
 
   const handleSubmitLogin = (e) => {
     e.preventDefault();
-    if(registerCredentials.name=='' && registerCredentials.email =='' && registerCredentials.password ==''){
-        errorNotify('Please Fill All Fields Carefully')
-    }else{
-
-        register("register");
+    if (
+      registerCredentials.name == "" &&
+      registerCredentials.email == "" &&
+      registerCredentials.password == ""
+    ) {
+      errorNotify("Please Fill All Fields Carefully");
+    } else {
+      register("signup");
     }
   };
 
@@ -88,7 +92,7 @@ function Register() {
 
           <form onSubmit={handleSubmitLogin} className="flex flex-col gap-4">
             <input
-            autoComplete="false"
+              autoComplete="false"
               className="p-2 mt-8 rounded-xl border"
               type="text"
               placeholder="Name"
@@ -97,7 +101,7 @@ function Register() {
               onChange={handleLoginInput}
             />
             <input
-            autoComplete="false"
+              autoComplete="false"
               className="p-2  rounded-xl border"
               type="email"
               placeholder="Email"
@@ -107,7 +111,7 @@ function Register() {
             />
             <div className="relative">
               <input
-              autoComplete="false"
+                autoComplete="false"
                 className="p-2 rounded-xl border w-full"
                 type={passwordEye ? "password" : "text"}
                 name="password"
@@ -140,7 +144,12 @@ function Register() {
               )}
             </div>
 
-            <p className="text-[#002D74] text-xs cursor-pointer" onClick={() =>  navigate("/login")}>Already have a account</p>
+            <p
+              className="text-[#002D74] text-xs cursor-pointer"
+              onClick={() => navigate("/login")}
+            >
+              Already have a account
+            </p>
 
             <button
               type="submit"
@@ -148,14 +157,12 @@ function Register() {
             >
               Register
             </button>
-            
           </form>
         </div>
         <div className="md:block hidden w-1/2 min-h-full">
           <img className="rounded-2xl" src={RegisterImg} />
         </div>
       </div>
-
 
       <Notification></Notification>
     </section>

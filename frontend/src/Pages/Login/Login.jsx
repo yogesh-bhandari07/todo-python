@@ -30,14 +30,19 @@ function Login() {
       method: "post",
       url: process.env.REACT_APP_API_BASE_URL + url,
       data: {
-        email: loginCredentials.email,
-        password: loginCredentials.password,
+        parameter:{
+          data:{
+            email: loginCredentials.email,
+            password: loginCredentials.password,
+          }
+        }
+
       },
     })
       .then(async (response) => {
         if (response.data.code == 200) {
-          let user = response.data.user;
-          let token = response.data.token;
+          let user = response.data.result.user_data;
+          let token = response.data.result.access_token;
           setToken(user, token);
           successNotify('Login Successfully')
         } else {
